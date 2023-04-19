@@ -185,13 +185,13 @@ class InferenceModule:
         "*** YOUR CODE HERE ***"
         shortest_distance = manhattanDistance(pacmanPosition, ghostPosition)
 
-        if noisyDistance is None:
-            if ghostPosition is jailPosition:
+        if noisyDistance == None:
+            if ghostPosition == jailPosition:
                 return 1
             else:  # in all other cases
                 return 0
         else:
-            if ghostPosition is jailPosition:
+            if ghostPosition == jailPosition:
                 return 0
         return busters.getObservationProbability(noisyDistance, shortest_distance)
 
@@ -325,7 +325,13 @@ class ExactInference(InferenceModule):
         current position is known.
         """
         "*** YOUR CODE HERE ***"
-        raiseNotDefined()
+        weight_distribution = DiscreteDistribution()
+        for previous_position in self.allPositions:
+            for new, previous in self.getPositionDistribution(gameState,previous_position).items():
+                weight_distribution[new] = weight_distribution[new] + (self.beliefs[previous_position] * previous)
+        self.beliefs = weight_distribution
+
+
 
     def getBeliefDistribution(self):
         return self.beliefs
